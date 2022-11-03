@@ -10,8 +10,9 @@ from score import ScoreAgent
 
 
 def generate_data():
-    batch_count = 1
-    iterations = 250
+    batch_count = 500
+    bandit_itr = 500
+    mcts_itr = 250
     size = 7
     objectives = read_objectives("shapes-L.txt")
     parallel = 12
@@ -20,34 +21,34 @@ def generate_data():
 
     for _ in range(batch_count):
         # MCTS vs Random
-        players = [MctsAgent(iterations, 1), RandomAgent(2)]
+        players = [MctsAgent(mcts_itr, 1), RandomAgent(2)]
         work.append((size, objectives, players))
-        players = [RandomAgent(2), MctsAgent(iterations, 1)]
+        players = [RandomAgent(2), MctsAgent(mcts_itr, 1)]
         work.append((size, objectives, players))
         # MCTS vs Bandit
-        players = [MctsAgent(iterations, 1), BanditAgent(iterations, 2)]
+        players = [MctsAgent(mcts_itr, 1), BanditAgent(bandit_itr, 2)]
         work.append((size, objectives, players))
-        players = [BanditAgent(iterations, 2), MctsAgent(iterations, 1)]
+        players = [BanditAgent(bandit_itr, 2), MctsAgent(mcts_itr, 1)]
         work.append((size, objectives, players))
         # MCTS vs Score
-        players = [MctsAgent(iterations, 1), ScoreAgent(iterations, 2)]
+        players = [MctsAgent(mcts_itr, 1), ScoreAgent(0, 2)]
         work.append((size, objectives, players))
-        players = [ScoreAgent(iterations, 2), MctsAgent(iterations, 1)]
+        players = [ScoreAgent(0, 2), MctsAgent(mcts_itr, 1)]
         work.append((size, objectives, players))
         # Score vs Random
-        players = [ScoreAgent(iterations, 1), RandomAgent(2)]
+        players = [ScoreAgent(0, 1), RandomAgent(2)]
         work.append((size, objectives, players))
-        players = [RandomAgent(2), ScoreAgent(iterations, 1)]
+        players = [RandomAgent(2), ScoreAgent(0, 1)]
         work.append((size, objectives, players))
         # Score vs Bandit
-        players = [ScoreAgent(iterations, 1), BanditAgent(iterations, 2)]
+        players = [ScoreAgent(0, 1), BanditAgent(bandit_itr, 2)]
         work.append((size, objectives, players))
-        players = [BanditAgent(iterations, 2), ScoreAgent(iterations, 1)]
+        players = [BanditAgent(bandit_itr, 2), ScoreAgent(0, 1)]
         work.append((size, objectives, players))
         # Bandit vs Random
-        players = [BanditAgent(iterations, 1), RandomAgent(2)]
+        players = [BanditAgent(bandit_itr, 1), RandomAgent(2)]
         work.append((size, objectives, players))
-        players = [RandomAgent(2), BanditAgent(iterations, 1)]
+        players = [RandomAgent(2), BanditAgent(bandit_itr, 1)]
         work.append((size, objectives, players))
 
     start = perf_counter()
