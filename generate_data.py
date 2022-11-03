@@ -1,9 +1,8 @@
 from itertools import starmap
 from multiprocessing import Pool
-from os import getpid
 from time import perf_counter
 from bandit_agent import BanditAgent
-from data_save_load import read_objectives
+from data_utils import encode_game_data, read_objectives, data_to_string
 from game import Game
 from mcts_agent import MctsAgent
 from random_agent import RandomAgent
@@ -54,13 +53,15 @@ def generate_data():
     start = perf_counter()
 
     if parallel == None:
-        starmap(play_game, work)
+        map = starmap(play_game, work)
+        for game in map:
+            game()
     else:
         # you probably shouldn't set parallel to a value larger than the
         # number of cores on your CPU, as otherwise agents running in parallel
         # may compete for the time available during their turn
         with Pool(parallel) as pool:
-            pool.starmap(play_game, work)
+            map = pool.starmap(play_game, work)
         pool.close()
 
     end = perf_counter()
@@ -71,9 +72,13 @@ def play_game(boardsize, objectives, players=None):
     game = Game.new(boardsize, objectives, players, False)
     winner = game.play()
 
-    # TODO: encode game data into a string
+    data = encode_game_data(game.board, winner)
+    data_str = data_to_string(data)
 
     file = open('data.txt', 'a')
-    pid = getpid()
-    file.write(str(pid) + "_____\n")
+    file.write(data_str)
+    file.write('\n')
     file.close()
+
+
+
