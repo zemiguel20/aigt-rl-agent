@@ -24,39 +24,12 @@ def read_objectives(filename):
     return shapes
 
 
-def save_weights_to_file(nn):
-    # TODO: implement
-    return
+def onehot_encode_board(board: np.ndarray, playerid: int):
+    board_flatened = board.flatten()
+    free_positions = (board_flatened == 0).astype(float)
+    p1_positions = (board_flatened == playerid).astype(float)
+    return np.concatenate((free_positions, p1_positions))
 
 
-def load_weights_from_file(nn):
-    # TODO: implement
-    return
-
-
-def encode_game_data(board, winner):
-    board_flatened = board.board.flatten()
-    free_positions = (board_flatened == 0).astype(int)
-    p1_positions = (board_flatened == 1).astype(int)
-    result = 0 if winner is None else winner.id
-    encoded_data = (free_positions, p1_positions, result)
-    return encoded_data
-
-
-def data_to_string(data):
-    free_positions = ' '.join(map(str, data[0]))
-    p1_positions = ' '.join(map(str, data[1]))
-    result = str(data[2])
-    data_str = [free_positions, ' | ', p1_positions, " | ", result]
-    data_str = ''.join(data_str)
-    return data_str
-
-
-def data_from_string(data_str):
-    split = data_str.split('|')
-    split = [string.strip() for string in split]  # remove lead and trail space
-    free_positions = np.fromstring(split[0], dtype=int, sep=' ')
-    p1_positions = np.fromstring(split[1], dtype=int, sep=' ')
-    result = int(split[2])
-    encoded_data = (free_positions, p1_positions, result)
-    return encoded_data
+def onehot_enconde_move(move):
+    return (move[0]/6, move[1]/6)  # normalize

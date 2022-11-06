@@ -1,6 +1,6 @@
+import copy
 from board import Board
 
-import numpy as np
 
 class Game:
     def __init__(self, board, objectives, players, print_board):
@@ -8,6 +8,7 @@ class Game:
         self.objectives = objectives
         self.players = players
         self.print_board = print_board
+        self.history = []  # saves board values, current player id, and their selected move
 
     @classmethod
     def new(cls, boardsize, objectives, players, print_board):
@@ -27,6 +28,11 @@ class Game:
                     break
 
                 pos = player.make_move(self)
+
+                # save history
+                self.history.append(
+                    (copy.deepcopy(self.board), player.id, pos))
+
                 if not self.board.is_free(pos):
                     print(f'Illegal move attempted!'
                           f'Position ({pos[0]}, {pos[1]}) is not free.')
@@ -78,9 +84,9 @@ class Game:
 
         return False
 
-    def print_result(self, player = None):
+    def print_result(self, player=None):
         if player == None:
             print('Draw!')
         else:
             print(f'{player} wins!')
-        print(self.board, flush = True)
+        print(self.board, flush=True)
