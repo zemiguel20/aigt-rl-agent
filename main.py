@@ -33,7 +33,7 @@ def main():
     # GENERATE INITIAL DATA (MILESTONE 1)
     if not os.path.exists('supervised_model'):
         work = []
-        for _ in range():
+        for _ in range(50):
             players = [RandomAgent(1), RandomAgent(2)]
             work.append((SIZE, OBJECTIVES, players))
             players = [RandomAgent(2), RandomAgent(1)]
